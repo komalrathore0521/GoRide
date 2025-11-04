@@ -33,5 +33,15 @@ public class AuthPostMapping {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PostMapping(path = "/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse httpServletResponse){
+        String[] tokens = authService.login(loginRequestDto);
+        Cookie cookie = new Cookie("refreshToken", tokens[1]);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(deployment.equals("production"));
+        cookie.setPath("/auth/refresh");
+        httpServletResponse.addCookie(cookie);
 
+        return ResponseEntity.ok(new LoginResponseDto(tokens[0]));
+    }
 }
