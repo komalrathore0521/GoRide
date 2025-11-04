@@ -17,8 +17,17 @@ public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/v3/api-docs/**",
+            "/v3/api-docs.yaml",
             "/swagger-ui/**",
             "/swagger-ui.html",
+            "/docs/**",           // your custom swagger-ui.path = /docs
+            "/docs",              // allow the base /docs if requested
+
+            // static resources that swagger/ui may use
+            "/webjars/**",
+            "/favicon.ico",
+
+            // actuator + auth
             "/actuator/**",
             "/auth/**"
     };
