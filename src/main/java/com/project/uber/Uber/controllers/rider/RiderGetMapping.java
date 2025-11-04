@@ -33,5 +33,10 @@ public class RiderGetMapping {
         return ResponseEntity.ok(riderService.getRiderProfile());
     }
 
-
+    @GetMapping("/getMyRides")
+    public ResponseEntity<List<RideDto>> getAllMyRides(@RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "1") Integer pageNumber){
+        Pageable pageRequest = PageRequest.of(pageNumber,PAGE_SIZE, Sort.by(sortBy).ascending());
+        Page<RideDto> rides = riderService.getAllMyRides(pageRequest);
+        return ResponseEntity.ok(rides.getContent());
+    }
 }
