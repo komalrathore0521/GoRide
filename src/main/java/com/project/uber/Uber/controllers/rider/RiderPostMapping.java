@@ -32,5 +32,8 @@ public class RiderPostMapping {
         return ResponseEntity.ok(riderService.cancelRide(rideId));
     }
 
-
+    @PostMapping("/rateDriver/{rideId}")
+    public ResponseEntity<DriverDto> rateDriver(@PathVariable Long rideId, @RequestBody RatingDto ratingDto){
+        return ResponseEntity.ok(riderService.rateDriver(rideId, ratingDto.getRating()));
+    }
 }
