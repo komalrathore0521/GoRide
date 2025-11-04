@@ -33,6 +33,13 @@ public class AuthPostMapping {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PostMapping(path = "/onboardDriver/{userId}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<DriverDto> onboardDriver(@PathVariable Long userId, @RequestBody OnboardDriverDto onboardDriverDto){
+        DriverDto driver = authService.onboardNewDriver(userId, onboardDriverDto);
+        return new ResponseEntity<>(driver, HttpStatus.CREATED);
+    }
+
     @PostMapping(path = "/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse httpServletResponse){
         String[] tokens = authService.login(loginRequestDto);
@@ -43,5 +50,17 @@ public class AuthPostMapping {
         httpServletResponse.addCookie(cookie);
 
         return ResponseEntity.ok(new LoginResponseDto(tokens[0]));
+    }
+
+    @PostMapping(path = "/refresh")
+    public ResponseEntity<LoginResponseDto> refreshToken(HttpServletRequest httpServletRequest){
+        String refreshToken = Arrays
+                .stream(httpServletRequest
+                        .getCookies())
+                        .filter(cookie -> cookie.getName().equals("refreshToken"))
+                        .findFirst()
+                        .map(cookie -> cookie.getValue())
+                        .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("Refresh token not found"));
+        return ResponseEntity.ok(authService.refreshToken(refreshToken));
     }
 }
